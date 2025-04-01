@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>😺Cat & Dog Tracker🐶</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Roboto', sans-serif;
+      background: linear-gradient(135deg, #f0f9ff, #cbebff);
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    header {
+      width: 100%;
+      text-align: center;
+      padding: 20px 0;
+      background: #333;
+      color: #fff;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 2.5em;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+
+    .info {
+      text-align: center;
+      margin: 20px 0;
+      padding: 15px 25px;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    .info p {
+      font-size: 1.2em;
+      font-weight: 400;
+      margin: 5px 0;
+    }
+
+    .info button {
+      margin: 10px;
+      padding: 10px 20px;
+      font-size: 1em;
+      font-weight: 600;
+      background: #4caf50;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease-in-out;
+    }
+
+    .info button:hover {
+      background-color: #388e3c;
+    }
+
+    #map {
+      width: 90%;
+      max-width: 1200px;
+      height: 400px;
+      margin-top: 20px;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    #compass-container {
+      margin: 20px;
+      text-align: center;
+    }
+
+    #compass {
+      width: 150px;
+      height: 150px;
+      background-image: url('compass.png'); /* Load local image */
+      background-size: cover;
+      border-radius: 50%;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+      margin: 0 auto;
+      transform: rotate(0deg);
+      transition: transform 0.5s ease;
+    }
+
+    footer {
+      margin-top: 20px;
+      padding: 10px;
+      font-size: 0.9em;
+      color: #666;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>😺Cat & Dog Tracker🐶</h1>
+  </header>
+
+  <div class="info">
+    <p><strong>Location:</strong> <span id="location">Fetching...</span></p>
+    <p><strong>Heading:</strong> <span id="heading">Fetching...</span></p>
+    <button onclick="window.location.reload()">Refetch</button> <!-- Full page refresh -->
+  </div>
+
+  <div id="map"></div>
+
+  <div id="compass-container">
+    <div id="compass"></div>
+  </div>
+
+  <footer>
+    © 2025 Cat & Dog Tracker | Made by Tharul
+  </footer>
+
+  <script>
+    // Real API URL
+    const apiUrl = "https://93aa09d1-5555-4c68-bbd7-0b6bacefe64b-00-iu753a063n36.sisko.replit.dev/get_location";
+
+    function fetchLocation() {
+      fetch(apiUrl)
+        .then(response => response.json())
+        .then(data => {
+          const { lat, lon, heading } = data; // Fetch real data from API
+
+          // Update location info
+          document.getElementById("location").innerText = `Latitude: ${lat.toFixed(6)}, Longitude: ${lon.toFixed(6)}`;
+
+          // Update heading info
+          document.getElementById("heading").innerText = `${heading.toFixed(1)}°`;
+
+          // Update map and compass
+          loadMap(lat, lon);
+          updateCompass(heading);
+        })
+        .catch(error => {
+          console.error("Error fetching location:", error);
+          document.getElementById("location").innerText = "Error fetching location.";
+          document.getElementById("heading").innerText = "Error fetching heading.";
+        });
+    }
+
+    function loadMap(lat, lon) {
+      const map = document.getElementById("map");
+      map.innerHTML = ""; // Clear existing map
+      const iframe = document.createElement("iframe");
+      iframe.src = `https://www.google.com/maps?q=${lat},${lon}&z=15&output=embed`;
+      iframe.width = "100%";
+      iframe.height = "400";
+      iframe.frameBorder = "0";
+      iframe.style.borderRadius = "10px";
+      map.appendChild(iframe);
+    }
+
+    function updateCompass(heading) {
+      // Adjust the heading by subtracting 45 degrees for visual alignment
+      const adjustedHeading = heading - 45;
+      const finalHeading = (adjustedHeading + 360) % 360; // Wrap around if negative
+      const compass = document.getElementById("compass");
+      compass.style.transform = `rotate(${finalHeading}deg)`; // Apply adjusted rotation
+    }
+
+    // Auto-fetch location every 5 seconds
+    setInterval(fetchLocation, 5000);
+
+    // Fetch location on page load
+    window.onload = fetchLocation;
+  </script>
+</body>
+</html>
