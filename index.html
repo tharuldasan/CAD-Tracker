@@ -83,7 +83,7 @@
     #compass {
       width: 150px;
       height: 150px;
-      background-image: url('compass.png'); /* Load local image */
+      background-image: url('compass.png'); /* Local compass image */
       background-size: cover;
       border-radius: 50%;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
@@ -109,7 +109,7 @@
   <div class="info">
     <p><strong>Location:</strong> <span id="location">Fetching...</span></p>
     <p><strong>Heading:</strong> <span id="heading">Fetching...</span></p>
-    <button onclick="window.location.reload()">Refetch</button> <!-- Full page refresh -->
+    <button onclick="fetchLocation()">Update GPS</button>
   </div>
 
   <div id="map"></div>
@@ -123,14 +123,14 @@
   </footer>
 
   <script>
-    // Real API URL
-    const apiUrl = "https://93aa09d1-5555-4c68-bbd7-0b6bacefe64b-00-iu753a063n36.sisko.replit.dev/get_location";
+    // Updated API URL
+    const apiUrl = "https://gps-api-tharul-1128.vercel.app/get_location";
 
     function fetchLocation() {
       fetch(apiUrl)
         .then(response => response.json())
         .then(data => {
-          const { lat, lon, heading } = data; // Fetch real data from API
+          const { lat, lon, heading } = data;
 
           // Update location info
           document.getElementById("location").innerText = `Latitude: ${lat.toFixed(6)}, Longitude: ${lon.toFixed(6)}`;
@@ -151,7 +151,7 @@
 
     function loadMap(lat, lon) {
       const map = document.getElementById("map");
-      map.innerHTML = ""; // Clear existing map
+      map.innerHTML = "";
       const iframe = document.createElement("iframe");
       iframe.src = `https://www.google.com/maps?q=${lat},${lon}&z=15&output=embed`;
       iframe.width = "100%";
@@ -162,17 +162,12 @@
     }
 
     function updateCompass(heading) {
-      // Adjust the heading by subtracting 45 degrees for visual alignment
       const adjustedHeading = heading - 45;
-      const finalHeading = (adjustedHeading + 360) % 360; // Wrap around if negative
-      const compass = document.getElementById("compass");
-      compass.style.transform = `rotate(${finalHeading}deg)`; // Apply adjusted rotation
+      const finalHeading = (adjustedHeading + 360) % 360;
+      document.getElementById("compass").style.transform = `rotate(${finalHeading}deg)`;
     }
 
-    // Auto-fetch location every 5 seconds
     setInterval(fetchLocation, 5000);
-
-    // Fetch location on page load
     window.onload = fetchLocation;
   </script>
 </body>
