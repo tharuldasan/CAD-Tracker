@@ -58,6 +58,23 @@
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
     }
 
+    #compass-container {
+      margin: 20px;
+      text-align: center;
+    }
+
+    #compass {
+      width: 150px;
+      height: 150px;
+      background-image: url('compass.png'); /* Local compass image */
+      background-size: cover;
+      border-radius: 50%;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+      margin: 0 auto;
+      transform: rotate(0deg);
+      transition: transform 1s ease-in-out;
+    }
+
     footer {
       margin-top: 20px;
       padding: 10px;
@@ -74,9 +91,14 @@
 
   <div class="info">
     <p><strong>Location:</strong> <span id="location">Fetching...</span></p>
+    <p><strong>Heading:</strong> <span id="heading">Fetching...</span></p>
   </div>
 
   <div id="map"></div>
+
+  <div id="compass-container">
+    <div id="compass"></div>
+  </div>
 
   <footer>
     © 2025 Cat & Dog Tracker | Made by Tharul
@@ -92,13 +114,20 @@
         .then(data => {
           const lat = data.lat || 0.0;
           const lon = data.lon || 0.0;
+          const heading = data.heading || 0.0;  // Ensure heading exists
 
+          // Update location info
           document.getElementById("location").innerText = `Latitude: ${lat.toFixed(6)}, Longitude: ${lon.toFixed(6)}`;
+          document.getElementById("heading").innerText = `${heading.toFixed(1)}°`;
+
+          // Update map & compass
           loadMap(lat, lon);
+          updateCompass(heading);
         })
         .catch(error => {
           console.error("Error fetching location:", error);
           document.getElementById("location").innerText = "❌ Unable to retrieve GPS coordinates.";
+          document.getElementById("heading").innerText = "❌ Error fetching heading.";
         });
     }
 
@@ -118,7 +147,13 @@
       map.appendChild(iframe);
     }
 
-    // 🔄 Auto-refresh location every 10 seconds (matching ESP32 behavior)
+    function updateCompass(heading) {
+      const compass = document.getElementById("compass");
+      const adjustedHeading = (heading - 45 + 360) % 360; // Correct the -45-degree offset
+      compass.style.transition = "transform 1s ease-in-out"; // Smooth rotation
+      compass.style.transform = `rotate(${adjustedHeading}deg)`;
+    }
+
     setInterval(fetchLocation, 10000);
     window.onload = fetchLocation;
   </script>
