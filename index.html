@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cat & Dog Tracker</title>
+  <title>CAD Tracker</title>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
   <style>
     body {
@@ -15,6 +15,22 @@
       display: flex;
       flex-direction: column;
       align-items: center;
+    }
+
+    header {
+      width: 100%;
+      text-align: center;
+      padding: 20px 0;
+      background: #333;
+      color: #fff;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 2.5em;
+      font-weight: 700;
+      letter-spacing: 1px;
     }
 
     .info {
@@ -53,6 +69,10 @@
 </head>
 <body>
 
+  <header>
+    <h1>CAD Tracker</h1>
+  </header>
+
   <div class="info">
     <p><strong>Location:</strong> <span id="location">Fetching...</span></p>
   </div>
@@ -60,7 +80,7 @@
   <div id="map"></div>
 
   <footer>
-    © 2025 Cat & Dog Tracker | Made by Tharul
+    © 2025 CAD Tracker | Made by Tharul
   </footer>
 
   <script>
